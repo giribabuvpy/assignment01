@@ -50,52 +50,10 @@
                         </div> 
 
                         <div class="form-group row py-2">
-                            <label for="field_type" class="col-md-4 col-form-label text-md-right">Field Type</label>
-                            <div class="col-md-6">
-                                <select id="field_type" name="field_type" class="form-control @error('field_type') is-invalid @enderror required">
-                                    <option value="">Choose Field Type</option> 
-                                    <option value="textarea" {{ isset($subcategory) && $subcategory->field_type === 'textarea' ? 'selected' : '' }}>
-                                        Textarea
-                                    </option>  
-                                    <option value="input" {{ isset($subcategory) && $subcategory->field_type === 'input' ? 'selected' : '' }}>
-                                        Input
-                                    </option> 
-                                </select>
-                                
-                                @error('field_type')
-                                  <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                  </span>
-                                @enderror
-                            </div>
-                        </div>
 
-
-                        <div class="form-group row py-2">
-                            <label for="input_type" class="col-md-4 col-form-label text-md-right">Input Type</label>
-                            <div class="col-md-6">
-                                <select id="input_type" name="input_type" class="form-control @error('input_type') is-invalid @enderror required">
-                                    <option value="">Choose Input Type</option> 
-                                    <option value="string" {{ isset($subcategory) && $subcategory->input_type === 'string' ? 'selected' : '' }}>
-                                        String
-                                    </option>  
-                                    <option value="decimal" {{ isset($subcategory) && $subcategory->input_type === 'decimal' ? 'selected' : '' }}>
-                                        Decimal
-                                    </option> 
-                                    <option value="date" {{ isset($subcategory) && $subcategory->input_type === 'date' ? 'selected' : '' }}>
-                                        Date
-                                    </option> 
-                                </select>
-                                
-                                @error('input_type')
-                                  <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                  </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        
+                        <input type="hidden" id="field_type" name="field_type" value="input" /> 
+                        <input type="hidden" id="input_type" name="field_type" value="decimal" />
+                             
                         <div class="form-group row py-2">
                             <label for="validation" class="col-md-4 col-form-label text-md-right">Validation</label>
                             <div class="col-md-6">

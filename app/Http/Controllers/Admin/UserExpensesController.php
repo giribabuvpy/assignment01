@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserExpenses;
 use Illuminate\Http\Request;
 
 class UserExpensesController extends Controller
@@ -60,6 +61,10 @@ class UserExpensesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $expenses = UserExpenses::findOrFail($id); 
+        $expenses->delete();
+ 
+        return redirect()->route('home')
+            ->with('success', 'Expense record deleted successfully');
     }
 }

@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('user_expenses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('sub_category_id');
-            $table->text('data');
-            $table->dateTime('expense_date')->useCurrent();
+            $table->text('data')->nullable();
+            $table->date('expense_date')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete;
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')->cascadeOnDelete;
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete;
             $table->timestamps();
         });
     }

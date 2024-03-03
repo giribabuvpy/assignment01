@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('sub_categories', function (Blueprint $table) {
             $table->id();
             $table->string('sub_category_name');
-            $table->enum('field_type',['textarea','input']);
-            $table->enum('input_type',['string','decimal','date']);
-            $table->enum('validation',['required','optional']);
+            $table->enum('field_type',['textarea','input'])->default('input');
+            $table->enum('input_type',['decimal','date'])->default('decimal');
+            $table->enum('validation',['required','optional'])->default('required');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete;
             $table->timestamps();
         });
     }
 
-    /**
+    /*
      * Reverse the migrations.
      */
     public function down(): void

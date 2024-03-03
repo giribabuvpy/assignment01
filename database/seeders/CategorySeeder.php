@@ -13,11 +13,10 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     { 
-        $categories = [
-            ['id'=>1,'category_name'=>'Header'],
-            ['id'=>2,'category_name'=>'Daily expenses'], 
-            ['id'=>3,'category_name'=>'Fixed expenses'], 
-            ['id'=>4,'category_name'=>'Variable expenses'],
+        $categories = [ 
+            ['id'=>1,'category_name'=>'Daily expenses'], 
+            ['id'=>2,'category_name'=>'Fixed expenses'], 
+            ['id'=>3,'category_name'=>'Variable expenses'],
         ];
  
         foreach ($categories as $category) {

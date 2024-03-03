@@ -21,7 +21,7 @@
         @endif
     </div>
     <div class="col">
-        <a href="{{route('sub-category.create')}}" class="btn btn-primary float-end">Create category</a>
+        <a href="{{route('category.create')}}" class="btn btn-primary float-end">Create category</a>
     </div>  
     </div>
     <div class="col-md-12 float-start">

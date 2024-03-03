@@ -15,7 +15,7 @@
                     </div>
                     @endif
 
-                    <table id="example" class="table table-striped" style="width:100%">
+                    <table id="example2" class="table table-striped" style="width:100%">
                         <thead>
                             <tr>
                                 <th>User</th>
@@ -47,7 +47,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        new DataTable('#example', { 
+        new DataTable('#example2', { 
             order: [[0, 'asc']],
             rowGroup: { dataSrc: 0 },  
         });

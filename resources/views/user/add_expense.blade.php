@@ -1,22 +1,33 @@
-@extends('layouts.app')
+@extends('layouts.design')
 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
              
                 <div class="card-header"><h4>Add your expenses</h4></div>
+
+                <?php /*
+                @if ($errors->any())
+                  <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                  </div>
+                @endif
+                */ ?>
                 
                 <div class="card-body">
-
-                    <form action="{{ route('expense.store') }}" method="POST">
+                    <form name="formaddexpenses" id="formaddexpenses" action="{{ route('expense.store') }}" method="POST" novalidate>
                         @method('POST')
                         @csrf
                         <div class="table-responsive">
                             <table class="table">
                                 @foreach($items as $cat=>$category)
-                                @if(count($category->subcategory)>1)
+                                @if(count($category->subcategory)>0)
                                 <tr>
                                     <td colspan="2">
                                         <h4>{{$category->category_name}}</h4>
@@ -31,13 +42,25 @@
                                     <td>
                                         <input type='hidden' name='record[{{$item->id}}][sub_category_id]' value='{{$item->id}}' />
                                         <input type='hidden' name='record[{{$item->id}}][user_id]' value="{{$userId}}" />
-                                        <input type='hidden' name='record[{{$item->id}}][validation]' value='{{$item->validation==='required' ?'required|':''}}{{$item->input_type}}' />
-
-                                        @if($item->field_type=='textarea')
-                                        <textarea name='record[{{$item->id}}][data]' class="form-control" {{$item->validation==='required' ?'required':''}} autofocus>{{ old('data[$item->id]') }}</textarea>
-                                        @else
-                                        <input name='record[{{$item->id}}][data]' type='{{$item->input_type==='decimal' ?'number':'text'}}' {{$item->input_type==='decimal' ?'min=1':''}} class="form-control {{$item->input_type==='date' ?'datepicker':''}}" value="{{ old('data[$item->id]') }}" {{ $item->validation==='required' ?'required':''}} autofocus />
+                                        <input type='hidden' name='record[{{$item->id}}][validation]' value='{{$item->validation==='required' ?'required':''}}{{$item->input_type}}' /> 
+                                        <input name='record[{{$item->id}}][data]' type='number' min='10' class="form-control {{ $item->validation==='required' ?'needs-validation':''}} @error('record.'.$item->id.'.data') is-invalid @enderror" value="{{ old('data[$item->id]') }}" {{ $item->validation==='required' ?'required autofocus':''}}  />
+                                       
+                                        @if($item->validation==='required')
+                                            <input name='required_numbers[{{$item->id}}]' type='hidden' value="{{ $item->validation==='required' ? $item->id:''}}" />
                                         @endif
+
+                                        <div class="invalid-feedback">
+                                            Please add expense amount for {{$item->sub_category_name}}, minimum 10.
+                                        </div>
+                                        <?php /*
+                                        @error('record.'.$item->id.'.data')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                        */ ?>
+ 
+                                        
                                     </td>
                                 </tr>
                                 @endforeach
@@ -58,11 +81,42 @@
         </div>
     </div>
 </div>
+
 <script>
-    $(document).ready(function() {
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-        });
+    
+
+  $(document).ready(function() {
+  $('.needs-validation').blur(function() {
+    validateInput($(this));
+  });
+
+  $('#formaddexpenses').submit(function(event) {
+    event.preventDefault();
+    var isValid = true;
+    $('.needs-validation').each(function() {
+      if (!validateInput($(this))) {
+        isValid = false;
+      }
     });
+    if (isValid) {
+      // Form submission logic
+      console.log("Form submitted successfully");
+    }
+  });
+
+  function validateInput(input) {
+    var value = input.val();
+    // Check if value is a number and is greater than or equal to 10
+    if (!isNaN(value) && parseFloat(value) >= 10) {
+      input.removeClass('is-invalid');
+      input.addClass('is-valid');
+      return true;
+    } else {
+      input.addClass('is-invalid');
+      input.removeClass('is-valid');
+      return false;
+    }
+  }
+});
 </script>
 @endsection

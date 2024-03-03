@@ -68,10 +68,8 @@ class SubCategoryController extends Controller
     { 
         $data = $request->validate([
             'sub_category_name' => 'required|regex:/^[\pL\s]+$/u|unique:sub_categories,sub_category_name,'.$subCategory->id,
-            'category_id' => 'required',
-            'field_type' => 'required',
-            'input_type' => 'required', 
-            'validation' => 'required', 
+            'category_id' => 'required',  
+            'validation' => 'nullable', 
         ]);
   
         $subCategory->update($data);  
