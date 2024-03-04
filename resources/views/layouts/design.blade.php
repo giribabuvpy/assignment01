@@ -48,6 +48,8 @@
   <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"
   integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY="
   crossorigin="anonymous"></script>
+
+  
 </head>
 
 <body>
@@ -67,16 +69,20 @@
 
           <li class="dropdown"><a href="#"><span>Home</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
-              <li><a href="{{route('home')}}">Dashboard</a></li>
+              <li><a href="{{route('home')}}">User dashboard</a></li>
+              @if(auth()->user()->role=='admin')
+                <li><a href="{{route('admin.dashboard')}}">Admin dashboard</a></li>
+              @endif
               <li><a href="{{route('expense.add')}}">Add expenses</a></li> 
             </ul>
           </li>
 
+          <li><a href="{{route('logout')}}">Logout</a></li> 
           
         </ul>
         <i class="bi bi-list mobile-nav-toggle d-none"></i>
       </nav><!-- .navbar -->
-
+       
       <a class="btn-getstarted scrollto" href="{{route('expense.add')}}">Add Expenses</a>
 
     </div>

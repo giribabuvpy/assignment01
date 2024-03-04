@@ -31,8 +31,8 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(Request $request)
-    {
- 
+    { 
+
         $subcategory = SubCategory::all();  
         $category = Category::all(); 
         $userId = Auth::id();
@@ -48,28 +48,42 @@ class HomeController extends Controller
         {
             $total_query->whereBetween(DB::raw('DATE(expense_date)'), [$request->start_date, $request->end_date]);
         }
+ 
         $total_query->where('user_id',$userId);
+
+
         $totalExpenses = $total_query->sum('data');
 
+        $query = UserExpenses::orderBy('expense_date','asc')->with('users','category', 'subcategory');
+         
+        $currentMonth = Carbon::now()->month; 
 
-
-
-        $query = UserExpenses::orderBy('expense_date','desc')->with('users','category', 'subcategory');
-        
         if ($request->has('sub_category') && !empty($request->sub_category) ) 
         {
             $query->where('sub_category_id', $request->sub_category);
+        }
+
+        if ($request->has('category') && !empty($request->category) ) 
+        {
+            $query->where('category_id', $request->category);
         }
 
         if ($request->has('start_date') && $request->has('end_date') && !empty($request->start_date && !empty($request->end_date) ))
         {
             $query->whereBetween(DB::raw('DATE(expense_date)'), [$request->start_date, $request->end_date]);
         }
+        else if ($request->has('month')  && !empty($request->month) )
+        {
+            $query->whereMonth(DB::raw('DATE(expense_date)'), $request->month);
+        } else {
+            $query->whereMonth(DB::raw('DATE(expense_date)'), $currentMonth);
+        }
 
         $query->where('user_id',$userId);
 
         $expenses = $query->get() 
-            ->groupBy([  
+            
+        ->groupBy([  
                 'category.category_name',
                 'subcategory.sub_category_name',  
                 function ($rec) {
@@ -77,27 +91,16 @@ class HomeController extends Controller
                 }
         ]);   
 
+       //dd(DB::getQueryLog());
+
         return view('home', ['expenses'=>$expenses,'subcategory'=>$subcategory,'category'=>$category,'totalexpenses'=>$totalExpenses]); 
     }
 
-
-    public function report()
-    {
-        
-        $expenses = UserExpenses::orderBy('created_at')
-            ->with('category', 'subCategory')
-            ->get()
-            ->groupBy([
-                'category.name',
-                'subCategory.name',
-                function ($item) {
-                    return Carbon::parse($item->date)->format('Y-m-d');
-                }
-            ]);
-        
-            
-        return view('expense.report', ['expenses'=>$expenses]);
+    public function getsubcategory(Category $category) {
+        $subCategories = SubCategory::where('category_id', $category->id)->get();
+        return response()->json($subCategories);
     }
+
 
     public function list() { 
        
@@ -156,7 +159,6 @@ class HomeController extends Controller
             $rules['record.'.$key.'.data'] = in_array($key, $checkValid) ? 'required|numeric' : 'nullable|numeric';
         }
  
-  
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -167,6 +169,7 @@ class HomeController extends Controller
             'record.*.sub_category_id' => 'nullable|numeric', 
             'record.*.data' =>  'nullable|numeric',
             'record.*.user_id' => 'nullable|numeric',
+            'record.*.expense_date' => 'nullable',
         ]); 
  
         foreach ($data['record'] as $itemData) {
@@ -179,7 +182,7 @@ class HomeController extends Controller
                 'category_id' => $cat_id,
                 'sub_category_id' => $itemData['sub_category_id'],
                 'data' => (empty($itemData['data']))?0:$itemData['data'],
-                'expense_date'=>date('Y-m-d'),
+                'expense_date'=>date('Y-m-d',strtotime($itemData['expense_date'])),
                 'user_id' => $itemData['user_id'],
             ]);
         }

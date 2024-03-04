@@ -6,7 +6,10 @@
         <div class="col-md-10">
             <div class="card">
              
-                <div class="card-header"><h4>Add your expenses</h4></div>
+                <div class="card-header">
+                  <h4 style="float: left;">Add your expenses</h4> 
+                  <div style="float: right;"> <input type="date" name="current_date" id="current_date"  value="<?php echo date('Y-m-d'); ?>" onblur="updatedate();"/> </div>
+              </div>
 
                 <?php /*
                 @if ($errors->any())
@@ -38,9 +41,11 @@
 
                                 @foreach($category->subcategory as $key=>$item)
                                 <tr>
-                                    <td>{{ $item->sub_category_name }}</td>
+                                    <td>{{ ucwords($item->sub_category_name) }}</td>
                                     <td>
                                         <input type='hidden' name='record[{{$item->id}}][sub_category_id]' value='{{$item->id}}' />
+
+                                        <input type='hidden' name='record[{{$item->id}}][expense_date]' value="" class="expense_date" />
                                         <input type='hidden' name='record[{{$item->id}}][user_id]' value="{{$userId}}" />
                                         <input type='hidden' name='record[{{$item->id}}][validation]' value='{{$item->validation==='required' ?'required':''}}{{$item->input_type}}' /> 
                                         <input name='record[{{$item->id}}][data]' type='number' min='10' class="form-control {{ $item->validation==='required' ?'needs-validation':''}} @error('record.'.$item->id.'.data') is-invalid @enderror" value="{{ old('data[$item->id]') }}" {{ $item->validation==='required' ?'required autofocus':''}}  />
@@ -50,7 +55,7 @@
                                         @endif
 
                                         <div class="invalid-feedback">
-                                            Please add expense amount for {{$item->sub_category_name}}, minimum 10.
+                                            Please add valid expense amount of {{ucwords($item->sub_category_name)}}. (Number, minimum 10)
                                         </div>
                                         <?php /*
                                         @error('record.'.$item->id.'.data')
@@ -83,24 +88,64 @@
 </div>
 
 <script>
-    
+  // JavaScript for form validation
+  document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+
+      var fields = form.querySelectorAll('.form-control');
+      fields.forEach(function(field) {
+        field.addEventListener('blur', function() {
+            console.log('test');
+          if (!field.checkValidity()) {
+            field.classList.add('is-invalid');
+          } else {
+            field.classList.remove('is-invalid');
+          }
+        });
+      });
+    });
+  }); 
+
+   
+function updatedate() {
+    let expense_date = document.getElementById("current_date").value;
+    $(".expense_date").val(expense_date); 
+    console.log(expense_date);
+  }
 
   $(document).ready(function() {
+
+    
+
   $('.needs-validation').blur(function() {
     validateInput($(this));
   });
 
   $('#formaddexpenses').submit(function(event) {
-    event.preventDefault();
+    
     var isValid = true;
     $('.needs-validation').each(function() {
       if (!validateInput($(this))) {
         isValid = false;
+        
       }
     });
     if (isValid) {
-      // Form submission logic
+      // Form submission logic  
       console.log("Form submitted successfully");
+      return true;
+    } else {
+      event.preventDefault();
+      return false;
     }
   });
 
@@ -116,7 +161,9 @@
       input.removeClass('is-valid');
       return false;
     }
-  }
+  } 
 });
+
 </script>
+ 
 @endsection

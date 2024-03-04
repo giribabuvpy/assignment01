@@ -27,4 +27,4 @@ class UserExpensesFactory extends Factory
             'sub_category_id' => SubCategory::inRandomOrder()->first()->id,
         ];
     }
-}
+} 

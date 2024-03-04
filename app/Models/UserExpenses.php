@@ -10,7 +10,7 @@ class UserExpenses extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id','sub_category_id','user_id','data'];
+    protected $fillable = ['category_id','sub_category_id','user_id','data','expense_date'];
 
     public function users():BelongsTo {
         return $this->belongsTo(User::class,'user_id','id');

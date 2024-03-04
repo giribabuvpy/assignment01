@@ -44,7 +44,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/addexpense',[App\Http\Controllers\HomeController::class, 'addexpenses'])->name('expense.add');
     Route::post('/store',[App\Http\Controllers\HomeController::class, 'store'])->name('expense.store');
-    Route::delete('/destroy',[App\Http\Controllers\HomeController::class, 'destroy'])->name('expense.destroy');
+    Route::delete('/destroy',[App\Http\Controllers\HomeController::class, 'destroy'])->name('expense.destroy'); 
+    Route::get('/sub-categories/{category}', [App\Http\Controllers\HomeController::class, 'getsubcategory'])->name('getsubcategory');
     
 });
 

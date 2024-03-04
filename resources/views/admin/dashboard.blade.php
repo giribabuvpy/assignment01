@@ -14,7 +14,7 @@
                         {{ session('status') }}
                     </div>
                     @endif
-
+                    <?php /*
                     <table id="example2" class="table table-striped" style="width:100%">
                         <thead>
                             <tr>
@@ -40,6 +40,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    */ ?>
                 </div>
             </div>
         </div>
